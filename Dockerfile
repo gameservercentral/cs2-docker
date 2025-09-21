@@ -3,7 +3,10 @@ USER root
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y lib32gcc-s1 lib32stdc++6 libc6-i386
-
+RUN mkdir -p /home/user/.steam/sdk64
+RUN mkdir -p /home/user/.steam/sdk32
+RUN ln -s /root/.local/share/Steam/steamcmd/linux32/steamclient.so /home/user/.steam/sdk64/
+RUN ln -s /root/.local/share/Steam/steamcmd/linux32/steamclient.so /home/user/.steam/sdk32/
 RUN mkdir -p /data-preseed && chown user:user /data-preseed
 USER user
 # CS2-Server installieren (AppID 730)
