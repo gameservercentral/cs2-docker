@@ -1,5 +1,9 @@
 FROM ghcr.io/gameservercentral/steamcmd
 USER root
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y lib32gcc-s1 lib32stdc++6 libc6-i386
+
 RUN mkdir -p /data-preseed && chown user:user /data-preseed
 USER user
 # CS2-Server installieren (AppID 730)
