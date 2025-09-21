@@ -1,0 +1,47 @@
+name: Nightly
+
+on:
+  push:
+    branches: 
+      - "main" 
+      - "feature/*" 
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+      - cron: '0 0 * * *' # This cron expression schedules the workflow to run every day at midnight UTC
+  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      steamcmd_version: ${{ steps.get_version.outputs.steamcmd_version }}
+    steps:
+    - uses: actions/checkout@v3
+            
+
+
+    - name: Log in to Harbor registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ secrets.REGISTRY_URL }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: |
+          ${{ secrets.REGISTRY_URL }}/gameservercentral/cs2
+
+
+    - name: Build and push Docker image to both registries
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: |
+          registry.wenisch.tech/gameservercentral/cs2:latest
+          registry.wenisch.tech/gameservercentral/cs2:nightly
+        labels: ${{ steps.meta.outputs.labels }}
