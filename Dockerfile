@@ -11,7 +11,7 @@ RUN mkdir -p /data-preseed && chown user:user /data-preseed
 USER user
 # CS2-Server installieren (AppID 730)
 RUN steamcmd +force_install_dir /data-preseed +login anonymous validate +quit
-RUN for i in 1 2 3 4 5; do steamcmd +login anonymous +app_update 730 validate +quit && break || sleep 15; done
+RUN steamcmd +login anonymous +app_update 730 validate +quit
 
 # Startskript für CS2-Server
 #COPY --chown=user:user entrypoint.sh /entrypoint.sh
